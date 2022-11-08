@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">VideoGames</string>
+
+    <string name="video_game_name_text">Nombre</string>
+    <string name="video_game_publisher_text">Distribuidor</string>
+    <string name="video_game_genre_text">Categoria</string>
+    <string name="video_game_age_category_text">Clasificación</string>
+    <string name="xbox_text">Xbox serie X</string>
+    <string name="play_station_text">Play Station 5</string>
+    <string name="nintengo_switch_text">Nintengo Switch</string>
+    <string name="pc_text">PC</string>
+    <string name="video_game_plataform_text">Plataforma</string>
+    <string name="video_game_rating_text">Puntuación</string>
+    <string name="titulo">Título</string>
+    <string name="precio">Precio</string>
+    <string name="estado">Estado</string>
+    <string name="nuevo">Nuevo</string>
+    <string name="usado">Usado</string>
+
+    <string-array name="age_categories">
+        <item>Rating pending</item>
+        <item>Early Childhood</item>
+        <item>Everyone</item>
+        <item>Everyone 10+</item>
+        <item>Teen</item>
+        <item>Mature</item>
+        <item>Adults only</item>
+    </string-array>
+
+    <string-array name="genres">
+        <item>Otra categoría</item>
+        <item>Acción</item>
+        <item>Aventura</item>
+        <item>Deportes</item>
+        <item>Estrategía</item>
+        <item>Juego de rol</item>
+        <item>Simulación</item>
+    </string-array>
+</resources>
