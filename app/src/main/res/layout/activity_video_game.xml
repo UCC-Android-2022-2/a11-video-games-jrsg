@@ -16,12 +16,14 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/etTitulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/titulo"
             android:minHeight="48dp" />
 
         <EditText
+            android:id="@+id/etPrecio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/precio"
@@ -39,25 +41,25 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/xboxOneCheckBox"
+            android:id="@+id/cbXbox"
             android:text="@string/xbox_text" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/playStation4CheckBox"
+            android:id="@+id/cbPlaystation"
             android:text="@string/play_station_text" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/nintendoSwitchCheckBox"
+            android:id="@+id/cbNintendo"
             android:text="@string/nintengo_switch_text" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/pcCheckBox"
+            android:id="@+id/cbPc"
             android:text="@string/pc_text" />
 
         <TextView
@@ -75,14 +77,16 @@
             android:orientation="vertical">
 
             <RadioButton
+                android:id="@+id/rbNuevo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nuevo"/>
+                android:text="@string/nuevo" />
 
             <RadioButton
+                android:id="@+id/rbUsado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/usado"/>
+                android:text="@string/usado" />
         </RadioGroup>
     </LinearLayout>
 
