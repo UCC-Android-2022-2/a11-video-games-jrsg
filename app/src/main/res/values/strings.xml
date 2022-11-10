@@ -16,6 +16,7 @@
     <string name="estado">Estado</string>
     <string name="nuevo">Nuevo</string>
     <string name="usado">Usado</string>
+    <string name="error_comunicacion">Error de comunicación</string>
 
     <string-array name="age_categories">
         <item>Rating pending</item>
