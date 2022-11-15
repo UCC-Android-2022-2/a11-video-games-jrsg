@@ -22,8 +22,21 @@ if($resultado){
     
     $games = array();
     
+    $indice = 0;
     while($fila = mysqli_fetch_assoc($resultado)){
-        $games[] = $fila;
+        
+        $games[$indice]["id"]       = (int) $fila['id'];
+        $games[$indice]["nombre"]   = $fila['titulo'];
+        $games[$indice]["estado"]   = $fila['estado'];
+        
+        $games[$indice]["precio"]   = (float) $fila['precio'];
+        
+        $games[$indice]["xbox"]             = $fila['xbox'] == 1;
+        $games[$indice]["playstation"]      = $fila['playstation'] == 1;
+        $games[$indice]["nintendo"]         = $fila['nintendo'] == 1;
+        $games[$indice]["pc"]               = $fila['pc'] == 1;
+        
+        $indice++;
     }
     
     $retorno['lista'] = $games;
