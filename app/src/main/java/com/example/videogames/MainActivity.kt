@@ -3,7 +3,9 @@ package com.example.videogames
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun leerLista(){
         val queue : RequestQueue = Volley.newRequestQueue(this)
+        Log.i("MainActivity", "leerLista()")
 
         val request : JsonObjectRequest = JsonObjectRequest(
             Request.Method.GET,
@@ -56,11 +59,16 @@ class MainActivity : AppCompatActivity() {
             {
                 response->
                     if(response.getBoolean("exito")){
+                        Log.i("MainActivity", "exito")
+
+
                         llenarLista( response.getJSONArray("lista") )
                     }
             },
             {
                 errorListener->
+                    Toast.makeText(applicationContext, "Error de conexión", Toast.LENGTH_SHORT).show()
+                    Log.e("MainActivity", "Error de conexión: " + errorListener.message)
             }
         )
 

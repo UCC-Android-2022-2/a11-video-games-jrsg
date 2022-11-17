@@ -1,5 +1,4 @@
 <?php
-
 include 'bd.php';
 
 $retorno = array(
@@ -20,8 +19,19 @@ $pc             = $post['pc'];
 $estado         = $post['estado'];
 
 
-
-$insert = "insert into games values (null, '$titulo', $precio, $xbox, $playstation, $nintendo, $pc, '$estado', NOW(), null)";
+if( empty($post['id']) ){
+    $insert = "insert into games values (null, '$titulo', $precio, $xbox, $playstation, $nintendo, $pc, '$estado', NOW(), null)";
+}else{
+    $insert = "update games set titulo = '$titulo', 
+                precio = $precio, 
+                xbox = $xbox, 
+                playstation = $playstation, 
+                nintendo = $nintendo, 
+                pc = $pc, 
+                estado = '$estado', 
+                actualizacion = NOW()
+                where id = $post[id]";
+}
 
 $resultado = mysqli_query($conexion, $insert);
 

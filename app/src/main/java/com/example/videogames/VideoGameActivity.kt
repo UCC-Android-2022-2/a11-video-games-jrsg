@@ -2,6 +2,7 @@ package com.example.videogames
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -17,9 +18,60 @@ import org.json.JSONObject
 class VideoGameActivity : AppCompatActivity() {
     private val url_guardado : String = "http://192.168.7.3/videogames/guardar.php"
 
+    private lateinit var etTitulo : EditText
+    private lateinit var etPrecio : EditText
+    private lateinit var cbXbox : CheckBox
+    private lateinit var cbPlaystation : CheckBox
+    private lateinit var cbNintendo : CheckBox
+    private lateinit var cbPc : CheckBox
+    private lateinit var rbNuevo : RadioButton
+    private lateinit var rbUsado : RadioButton
+
+    private var id = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_game)
+
+        etTitulo        = findViewById(R.id.etTitulo)
+        etPrecio        = findViewById(R.id.etPrecio)
+        cbXbox          = findViewById(R.id.cbXbox)
+        cbPlaystation   = findViewById(R.id.cbPlaystation)
+        cbNintendo      = findViewById(R.id.cbNintendo)
+        cbPc            = findViewById(R.id.cbPc)
+        rbNuevo         = findViewById(R.id.rbNuevo)
+        rbUsado         = findViewById(R.id.rbUsado)
+
+        configUi()
+    }
+
+    private fun configUi() {
+        val intent = intent
+
+        if( intent != null && intent.hasExtra("id") ){
+            id = intent.getIntExtra("id", 0)
+
+            val nombre = intent.getStringExtra("nombre")
+            val precio = intent.getDoubleExtra("precio", 0.0)
+            val estado = intent.getStringExtra("estado")
+
+            val xbox            = intent.getBooleanExtra("xbox", false)
+            val play_station    = intent.getBooleanExtra("play_station", false)
+            val nintendo        = intent.getBooleanExtra("nintendo", false)
+            val pc              = intent.getBooleanExtra("pc", false)
+
+            etTitulo.setText( nombre )
+            etPrecio.setText( precio.toString() )
+
+            rbNuevo.isChecked = estado.equals("N")
+            rbUsado.isChecked = estado.equals("U")
+
+            cbXbox.isChecked = xbox
+            cbPlaystation.isChecked = play_station
+            cbNintendo.isChecked = nintendo
+            cbPc.isChecked = pc
+
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -37,16 +89,7 @@ class VideoGameActivity : AppCompatActivity() {
     }
 
     private fun guardar() {
-        val etTitulo : EditText = findViewById(R.id.etTitulo)
-        val etPrecio : EditText = findViewById(R.id.etPrecio)
 
-        val cbXbox : CheckBox = findViewById(R.id.cbXbox)
-        val cbPlaystation : CheckBox = findViewById(R.id.cbPlaystation)
-        val cbNintendo : CheckBox = findViewById(R.id.cbNintendo)
-        val cbPc : CheckBox = findViewById(R.id.cbPc)
-
-        val rbNuevo : RadioButton = findViewById(R.id.rbNuevo)
-        val rbUsado : RadioButton = findViewById(R.id.rbUsado)
         ////////////////////////////////////////////////////////////////////////////////
 
         val titulo : String = etTitulo.text.toString()
@@ -62,6 +105,7 @@ class VideoGameActivity : AppCompatActivity() {
 
         val parametros = mutableMapOf<String, Any?>()
 
+        parametros["id"]            = id
         parametros["titulo"]        = titulo
         parametros["precio"]        = precio
 
