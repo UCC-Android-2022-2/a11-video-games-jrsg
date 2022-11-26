@@ -1,22 +1,31 @@
 package com.example.videogames
 
-import androidx.appcompat.app.AppCompatActivity
+import android.R.attr.data
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
+import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storage
+import com.squareup.picasso.Picasso
 import org.json.JSONObject
+import java.io.File
+import java.io.InputStream
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class VideoGameActivity : AppCompatActivity() {
-    private val url_guardado : String = "http://192.168.7.3/videogames/guardar.php"
+    private val url_guardado : String = "http://192.100.213.183/videogames/guardar.php"
 
     private lateinit var etTitulo : EditText
     private lateinit var etPrecio : EditText
@@ -27,7 +36,11 @@ class VideoGameActivity : AppCompatActivity() {
     private lateinit var rbNuevo : RadioButton
     private lateinit var rbUsado : RadioButton
 
+
     private var id = 0
+
+    private lateinit var storage: FirebaseStorage
+    private var urlImagen = "";
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +56,8 @@ class VideoGameActivity : AppCompatActivity() {
         rbUsado         = findViewById(R.id.rbUsado)
 
         configUi()
+
+        storage = Firebase.storage
     }
 
     private fun configUi() {
@@ -51,9 +66,10 @@ class VideoGameActivity : AppCompatActivity() {
         if( intent != null && intent.hasExtra("id") ){
             id = intent.getIntExtra("id", 0)
 
-            val nombre = intent.getStringExtra("nombre")
-            val precio = intent.getDoubleExtra("precio", 0.0)
-            val estado = intent.getStringExtra("estado")
+            val nombre          = intent.getStringExtra("nombre")
+            val precio          = intent.getDoubleExtra("precio", 0.0)
+            val estado          = intent.getStringExtra("estado")
+            val url : String    = intent.getStringExtra("url")!!
 
             val xbox            = intent.getBooleanExtra("xbox", false)
             val play_station    = intent.getBooleanExtra("play_station", false)
@@ -71,11 +87,19 @@ class VideoGameActivity : AppCompatActivity() {
             cbNintendo.isChecked = nintendo
             cbPc.isChecked = pc
 
+            mostrarImagen(url)
+
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.videogame_menu, menu)
+
+        if(id == 0) {
+            menuInflater.inflate(R.menu.videogame_edita_menu, menu)
+        }else{
+            menuInflater.inflate(R.menu.videogame_edita_menu, menu)
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -85,13 +109,77 @@ class VideoGameActivity : AppCompatActivity() {
             guardar()
         }
 
+        if(item.itemId == R.id.opc_eliminar){
+            eliminar()
+        }
+
+        if(item.itemId == R.id.opc_imagen){
+            agregarImagen()
+        }
+
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun agregarImagen() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("image/*")
+        startActivityForResult(intent, 1)
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(resultCode == RESULT_OK){
+            if(requestCode == 1){
+                if(data != null) {
+                    val uri: Uri? = data.data
+
+                    subirImagen(uri)
+                }
+            }
+        }
+    }
+
+    private fun subirImagen(uri: Uri?) {
+        if(uri != null) {
+            val nombreArchivo = generarNombreArchivo()
+
+            val storageRef = storage.getReference("images/${nombreArchivo}")
+            val carga = storageRef.putFile(uri)
+
+            carga.addOnFailureListener { error ->
+                Log.e("VideoGameActivity", error.toString())
+            }.addOnSuccessListener { task ->
+                storageRef.downloadUrl.addOnSuccessListener { it
+                    mostrarImagen(it.toString())
+                }
+            }
+        }
+    }
+
+    private fun mostrarImagen(url : String){
+        if(url.isNotEmpty() ) {
+            val ivPortadata: ImageView = findViewById(R.id.ivPortada)
+            Picasso.get().load(url).into(ivPortadata);
+        }
+    }
+
+    private fun generarNombreArchivo(): String {
+        val time = Calendar.getInstance().time
+        val formatter = SimpleDateFormat("yyyy-MM-dd_HH:mm:ss")
+        val current = formatter.format(time)
+        return "img_$current"
+    }
+
+
+    private fun eliminar() {
+        TODO("Not yet implemented")
     }
 
     private fun guardar() {
 
         ////////////////////////////////////////////////////////////////////////////////
-
         val titulo : String = etTitulo.text.toString()
         val precio : String = etPrecio.text.toString()
 
@@ -115,6 +203,9 @@ class VideoGameActivity : AppCompatActivity() {
         parametros["pc"]            = pc.toString()
 
         parametros["estado"]        = estado
+
+        //ajustar guardar.php para guardar en la Base de datos la url
+        parametros["url"]           = urlImagen
 
         val post : JSONObject = JSONObject(parametros)
 

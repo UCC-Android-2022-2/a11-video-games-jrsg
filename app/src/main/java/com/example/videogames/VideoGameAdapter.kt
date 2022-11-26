@@ -36,6 +36,8 @@ class VideoGameAdapter : RecyclerView.Adapter<VideoGameVH>() {
             intent.putExtra("nintendo", videoGame.nintendo)
             intent.putExtra("pc", videoGame.pc)
 
+            intent.putExtra("url", videoGame.url)
+
             holder.itemView.context.startActivity(intent)
         }
     }

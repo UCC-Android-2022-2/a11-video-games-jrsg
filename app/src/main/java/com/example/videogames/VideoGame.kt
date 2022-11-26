@@ -11,4 +11,5 @@ class VideoGame {
 
     var precio = 0.0
     var rating = 0.0
+    var url = ""
 }

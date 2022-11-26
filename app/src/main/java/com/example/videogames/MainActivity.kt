@@ -17,7 +17,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
-    private val url_listar : String = "http://192.168.7.3/videogames/listar.php"
+    private val url_listar : String = "http://192.100.213.183/videogames/listar.php"
     private lateinit var adapter : VideoGameAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +92,9 @@ class MainActivity : AppCompatActivity() {
             videoGame.play_station      = v.getBoolean("playstation")
             videoGame.nintendo          = v.getBoolean("nintendo")
             videoGame.pc                = v.getBoolean("pc")
+
+            //Ajustar listar.php para traer la url
+            videoGame.url               = v.getString("url")
 
             adapter.guardar( videoGame )
         }
