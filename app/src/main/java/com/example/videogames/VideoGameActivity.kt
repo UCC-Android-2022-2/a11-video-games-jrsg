@@ -1,8 +1,11 @@
 package com.example.videogames
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,7 +16,12 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import org.json.JSONObject
+import java.io.File
 
 class VideoGameActivity : AppCompatActivity() {
     private val url_guardado : String = "http://192.168.7.3/videogames/guardar.php"
@@ -29,6 +37,8 @@ class VideoGameActivity : AppCompatActivity() {
 
     private var id = 0
 
+    private lateinit var storage: FirebaseStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video_game)
@@ -43,6 +53,8 @@ class VideoGameActivity : AppCompatActivity() {
         rbUsado         = findViewById(R.id.rbUsado)
 
         configUi()
+
+        storage = Firebase.storage
     }
 
     private fun configUi() {
@@ -75,7 +87,13 @@ class VideoGameActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.videogame_menu, menu)
+
+        if(id == 0) {
+            menuInflater.inflate(R.menu.videogame_menu, menu)
+        }else{
+            menuInflater.inflate(R.menu.videogame_edita_menu, menu)
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -85,7 +103,46 @@ class VideoGameActivity : AppCompatActivity() {
             guardar()
         }
 
+        if(item.itemId == R.id.opc_eliminar){
+            eliminar()
+        }
+
+        if(item.itemId == R.id.opc_imagen){
+            agregarImagen()
+        }
+
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun agregarImagen() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.setType("image/*")
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(resultCode == RESULT_OK){
+            if(requestCode == 1){
+                if(data != null) {
+                    val uri: Uri? = data.data
+
+                    subirImagen(uri)
+                }
+            }
+        }
+    }
+
+    private fun subirImagen(uri: Uri) {
+        var file = Uri.fromFile(File( uri ))
+        var storageRef = storage.reference
+        val imageRef = storageRef.child("images/${file.lastPathSegment}")
+        imageRef.putFile(file)
+    }
+
+    private fun eliminar() {
+        TODO("Not yet implemented")
     }
 
     private fun guardar() {
