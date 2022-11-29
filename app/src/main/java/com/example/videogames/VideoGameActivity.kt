@@ -69,7 +69,7 @@ class VideoGameActivity : AppCompatActivity() {
             val nombre          = intent.getStringExtra("nombre")
             val precio          = intent.getDoubleExtra("precio", 0.0)
             val estado          = intent.getStringExtra("estado")
-            val url : String    = intent.getStringExtra("url")!!
+            urlImagen           = intent.getStringExtra("url")!!
 
             val xbox            = intent.getBooleanExtra("xbox", false)
             val play_station    = intent.getBooleanExtra("play_station", false)
@@ -87,7 +87,7 @@ class VideoGameActivity : AppCompatActivity() {
             cbNintendo.isChecked = nintendo
             cbPc.isChecked = pc
 
-            mostrarImagen(url)
+            mostrarImagen(urlImagen)
 
         }
     }
@@ -152,7 +152,8 @@ class VideoGameActivity : AppCompatActivity() {
                 Log.e("VideoGameActivity", error.toString())
             }.addOnSuccessListener { task ->
                 storageRef.downloadUrl.addOnSuccessListener { it
-                    mostrarImagen(it.toString())
+                    urlImagen = it.toString()
+                    mostrarImagen(urlImagen)
                 }
             }
         }
